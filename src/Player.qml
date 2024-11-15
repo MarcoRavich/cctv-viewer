@@ -46,6 +46,7 @@ FocusScope {
         color: root.color
         border.color: "#101010"
         anchors.fill: parent
+        clip: true
 
         VideoOutput {
             id: videoOutput
@@ -100,6 +101,7 @@ FocusScope {
 
         // Viewfinder (20% of the main area, gray, centered)
         Rectangle {
+            id: viewfinder
             width: parent.width * 0.2
             height: parent.height * 0.2
             color: "transparent"
@@ -124,7 +126,7 @@ FocusScope {
             border.color: "green"
             anchors.centerIn: parent
         }
-
+        
         // Dotted diagonals (grey)
         Canvas {
             id: diagonalsCanvas
@@ -138,16 +140,34 @@ FocusScope {
                 ctx.setLineDash([5, 5])
                 ctx.lineWidth = 1
 
-                // Top left to bottom right
+                // Coordinates of viewfinder (center rectangle)
+                var vfLeft = (diagonalsCanvas.width - viewfinder.width) / 2
+                var vfTop = (diagonalsCanvas.height - viewfinder.height) / 2
+                var vfRight = vfLeft + viewfinder.width
+                var vfBottom = vfTop + viewfinder.height
+
+                // Top left to viewfinder top left
                 ctx.beginPath()
                 ctx.moveTo(0, 0)
-                ctx.lineTo(diagonalsCanvas.width, diagonalsCanvas.height)
+                ctx.lineTo(vfLeft, vfTop)
                 ctx.stroke()
 
-                // Top right to bottom left
+                // Top right to viewfinder top right
                 ctx.beginPath()
                 ctx.moveTo(diagonalsCanvas.width, 0)
-                ctx.lineTo(0, diagonalsCanvas.height)
+                ctx.lineTo(vfRight, vfTop)
+                ctx.stroke()
+
+                // Bottom left to viewfinder bottom left
+                ctx.beginPath()
+                ctx.moveTo(0, diagonalsCanvas.height)
+                ctx.lineTo(vfLeft, vfBottom)
+                ctx.stroke()
+
+                // Bottom right to viewfinder bottom right
+                ctx.beginPath()
+                ctx.moveTo(diagonalsCanvas.width, diagonalsCanvas.height)
+                ctx.lineTo(vfRight, vfBottom)
                 ctx.stroke()
             }
         }
