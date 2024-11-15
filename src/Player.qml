@@ -98,37 +98,37 @@ FocusScope {
             }
         }
 
-        // Quadrato centrato con dimensioni percentuali
+        // Viewfinder (20% of the main area, gray, centered)
         Rectangle {
-            width: parent.width * 0.2  // 20% della larghezza del rettangolo principale
-            height: parent.height * 0.2  // 20% dell'altezza del rettangolo principale
+            width: parent.width * 0.2
+            height: parent.height * 0.2
             color: "transparent"
             border.color: "gray"
-            anchors.centerIn: parent  // Centra il quadrato all'interno del rettangolo principale
+            anchors.centerIn: parent
         }
 
-        // Rettangolo rosso, 3,5% più piccolo del contenitore principale
+        // EBU recommended Action-safe area (96,5% of the main area, red, centered)
         Rectangle {
-            width: parent.width * 0.965  // 96,5% della larghezza del rettangolo principale
-            height: parent.height * 0.965  // 96,5% dell'altezza del rettangolo principale
+            width: parent.width * 0.965
+            height: parent.height * 0.965
             color: "transparent"
             border.color: "red"
-            anchors.centerIn: parent  // Centra il rettangolo all'interno del rettangolo principale
+            anchors.centerIn: parent
         }
 
-        // Rettangolo verde, 5% più piccolo del contenitore principale
+        // EBU recommended Graphics-safe area (95% of the main area, green, centered)
         Rectangle {
-            width: parent.width * 0.95  // 95% della larghezza del rettangolo principale
-            height: parent.height * 0.95  // 95% dell'altezza del rettangolo principale
+            width: parent.width * 0.95
+            height: parent.height * 0.95
             color: "transparent"
             border.color: "green"
-            anchors.centerIn: parent  // Centra il rettangolo all'interno del rettangolo principale
+            anchors.centerIn: parent
         }
 
-        // Diagonali tratteggiate
+        // Dotted diagonals (grey)
         Canvas {
             id: diagonalsCanvas
-            anchors.fill: parent  // Riempi tutto il rettangolo
+            anchors.fill: parent
             antialiasing: true
 
             onPaint: {
@@ -136,7 +136,7 @@ FocusScope {
                 ctx.clearRect(0, 0, diagonalsCanvas.width, diagonalsCanvas.height)
                 ctx.strokeStyle = "gray"
                 ctx.setLineDash([5, 5])  // Pattern tratteggiato: 5 pixel disegno, 5 pixel spazio
-                ctx.lineWidth = 1
+                ctx.lineWidth = 2
 
                 // Prima diagonale dall'angolo in alto a sinistra all'angolo in basso a destra
                 ctx.beginPath()
