@@ -135,16 +135,16 @@ FocusScope {
                 var ctx = diagonalsCanvas.getContext("2d")
                 ctx.clearRect(0, 0, diagonalsCanvas.width, diagonalsCanvas.height)
                 ctx.strokeStyle = "gray"
-                ctx.setLineDash([5, 5])  // Pattern tratteggiato: 5 pixel disegno, 5 pixel spazio
-                ctx.lineWidth = 2
+                ctx.setLineDash([5, 5])
+                ctx.lineWidth = 1
 
-                // Prima diagonale dall'angolo in alto a sinistra all'angolo in basso a destra
+                // Top left to bottom right
                 ctx.beginPath()
                 ctx.moveTo(0, 0)
                 ctx.lineTo(diagonalsCanvas.width, diagonalsCanvas.height)
                 ctx.stroke()
 
-                // Seconda diagonale dall'angolo in alto a destra all'angolo in basso a sinistra
+                // Top right to bottom left
                 ctx.beginPath()
                 ctx.moveTo(diagonalsCanvas.width, 0)
                 ctx.lineTo(0, diagonalsCanvas.height)
