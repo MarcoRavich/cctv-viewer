@@ -109,7 +109,7 @@ FocusScope {
             anchors.centerIn: parent
         }
 
-        // EBU recommended Action-safe area (96,5% of the main area, red, centered)
+        // EBU recommended Action-safe area (96.5% of the main area, red, centered)
         Rectangle {
             width: parent.width * 0.965
             height: parent.height * 0.965
@@ -134,41 +134,35 @@ FocusScope {
             antialiasing: true
 
             onPaint: {
-                var ctx = diagonalsCanvas.getContext("2d")
-                ctx.clearRect(0, 0, diagonalsCanvas.width, diagonalsCanvas.height)
-                ctx.strokeStyle = "gray"
-                ctx.setLineDash([5, 5])
-                ctx.lineWidth = 1
+                var ctx = diagonalsCanvas.getContext("2d");
+                ctx.clearRect(0, 0, diagonalsCanvas.width, diagonalsCanvas.height);
+                ctx.strokeStyle = "gray";
+                ctx.setLineDash([5, 5]);
+                ctx.lineWidth = 1;
 
                 // Coordinates of viewfinder (center rectangle)
-                var vfLeft = (diagonalsCanvas.width - viewfinder.width) / 2
-                var vfTop = (diagonalsCanvas.height - viewfinder.height) / 2
-                var vfRight = vfLeft + viewfinder.width
-                var vfBottom = vfTop + viewfinder.height
+                var vfLeft = (diagonalsCanvas.width - viewfinder.width) / 2;
+                var vfTop = (diagonalsCanvas.height - viewfinder.height) / 2;
+                var vfRight = vfLeft + viewfinder.width;
+                var vfBottom = vfTop + viewfinder.height;
 
+                // Draw all diagonal lines in a single path
+                ctx.beginPath();
                 // Top left to viewfinder top left
-                ctx.beginPath()
-                ctx.moveTo(0, 0)
-                ctx.lineTo(vfLeft, vfTop)
-                ctx.stroke()
-
+                ctx.moveTo(0, 0);
+                ctx.lineTo(vfLeft, vfTop);
                 // Top right to viewfinder top right
-                ctx.beginPath()
-                ctx.moveTo(diagonalsCanvas.width, 0)
-                ctx.lineTo(vfRight, vfTop)
-                ctx.stroke()
-
+                ctx.moveTo(diagonalsCanvas.width, 0);
+                ctx.lineTo(vfRight, vfTop);
                 // Bottom left to viewfinder bottom left
-                ctx.beginPath()
-                ctx.moveTo(0, diagonalsCanvas.height)
-                ctx.lineTo(vfLeft, vfBottom)
-                ctx.stroke()
-
+                ctx.moveTo(0, diagonalsCanvas.height);
+                ctx.lineTo(vfLeft, vfBottom);
                 // Bottom right to viewfinder bottom right
-                ctx.beginPath()
-                ctx.moveTo(diagonalsCanvas.width, diagonalsCanvas.height)
-                ctx.lineTo(vfRight, vfBottom)
-                ctx.stroke()
+                ctx.moveTo(diagonalsCanvas.width, diagonalsCanvas.height);
+                ctx.lineTo(vfRight, vfBottom);
+
+                // Stroke all lines at once
+                ctx.stroke();
             }
         }
     }
