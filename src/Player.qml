@@ -99,73 +99,119 @@ FocusScope {
             }
         }
 
-        // Viewfinder (20% of the main area, gray, centered)
+        // Viewfinder (70% of the main area, trasparent, centered)
         Rectangle {
             id: viewfinder
-            width: parent.width * 0.2
-            height: parent.height * 0.2
+            width: parent.width * 0.70
+            height: parent.height * 0.70
             color: "transparent"
-            border.color: "gray"
+			border.width: 0
             anchors.centerIn: parent
         }
+		
+		// Center
+		Canvas {
+			id: centralCrossCanvas
+			anchors.fill: parent
 
-        // EBU recommended Action-safe area (96.5% of the main area, red, centered)
-        Rectangle {
-            width: parent.width * 0.965
-            height: parent.height * 0.965
-            color: "transparent"
-            border.color: "red"
-            anchors.centerIn: parent
-        }
+			onPaint: {
+			var ctx = centralCrossCanvas.getContext("2d");
+			ctx.clearRect(0, 0, centralCrossCanvas.width, centralCrossCanvas.height);
 
-        // EBU recommended Graphics-safe area (95% of the main area, green, centered)
-        Rectangle {
-            width: parent.width * 0.95
-            height: parent.height * 0.95
-            color: "transparent"
-            border.color: "green"
-            anchors.centerIn: parent
-        }
+			// Set color and type of center cross
+			ctx.strokeStyle = "white";
+			ctx.setLineDash([3, 3])
+			ctx.lineWidth = 1;
+
+			// Center
+			var centerX = centralCrossCanvas.width / 2;
+			var centerY = centralCrossCanvas.height / 2;
+
+			// Cross arm size
+			var armLength = centralCrossCanvas.height * 0.05;
+
+			// Draw "+"
+			ctx.beginPath();
+
+			// Vertical
+			ctx.moveTo(centerX, centerY - armLength);
+			ctx.lineTo(centerX, centerY + armLength);
+
+			// Horizontal
+			ctx.moveTo(centerX - armLength, centerY);
+			ctx.lineTo(centerX + armLength, centerY);
+
+			// Print
+			ctx.stroke();
+			}
+		}
+     
+        // Perpendicular lines
+		Canvas {
+			id: perpendicularCanvas
+			anchors.fill: parent
+			antialiasing: true
+
+			onPaint: {
+				var ctx = perpendicularCanvas.getContext("2d");
+				ctx.clearRect(0, 0, perpendicularCanvas.width, perpendicularCanvas.height);
+				ctx.strokeStyle = "white";
+				ctx.setLineDash([]);
+				ctx.lineWidth = 1;
+
+				// Coordinates of viewfinder (center rectangle)
+				var vfLeft = (perpendicularCanvas.width - viewfinder.width) / 2;
+				var vfTop = (perpendicularCanvas.height - viewfinder.height) / 2;
+				var vfRight = vfLeft + viewfinder.width;
+				var vfBottom = vfTop + viewfinder.height;
+				var vfCenterX = vfLeft + viewfinder.width / 2;
+				var vfCenterY = vfTop + viewfinder.height / 2;
+
+				// Draw vertical line (centered horizontally)
+				ctx.beginPath();
+				ctx.moveTo(vfCenterX, 0); // From top to above the viewfinder
+				ctx.lineTo(vfCenterX, vfTop);
+				ctx.moveTo(vfCenterX, vfBottom); // From below the viewfinder to bottom
+				ctx.lineTo(vfCenterX, perpendicularCanvas.height);
+				ctx.stroke();
+
+				// Draw horizontal line (centered vertically)
+				ctx.beginPath();
+				ctx.moveTo(0, vfCenterY); // From left to left of the viewfinder
+				ctx.lineTo(vfLeft, vfCenterY);
+				ctx.moveTo(vfRight, vfCenterY); // From right of the viewfinder to right
+				ctx.lineTo(perpendicularCanvas.width, vfCenterY);
+				ctx.stroke();
+			}
+		}
+    
+		// EBU recommended Action-safe area (96.5% of the main area, red transparent)
+		Canvas {
+			id: actionSafeOverlay
+			anchors.fill: parent
+
+			onPaint: {
+				var ctx = actionSafeOverlay.getContext("2d");
+				ctx.clearRect(0, 0, actionSafeOverlay.width, actionSafeOverlay.height);
+
+				// Colore rosso trasparente
+				ctx.fillStyle = "rgba(255, 0, 0, 0.3)";
         
-        // Dotted diagonals (grey)
-        Canvas {
-            id: diagonalsCanvas
-            anchors.fill: parent
-            antialiasing: true
+				// Disegna l'area principale
+				ctx.fillRect(0, 0, actionSafeOverlay.width, actionSafeOverlay.height);
 
-            onPaint: {
-                var ctx = diagonalsCanvas.getContext("2d");
-                ctx.clearRect(0, 0, diagonalsCanvas.width, diagonalsCanvas.height);
-                ctx.strokeStyle = "gray";
-                ctx.setLineDash([5, 5]);
-                ctx.lineWidth = 1;
+				// Calcola il rettangolo centrale per l'Action-safe area
+				var actionSafeWidth = parent.width * 0.95;
+				var actionSafeHeight = parent.height * 0.95;
+				var actionSafeLeft = (actionSafeOverlay.width - actionSafeWidth) / 2;
+				var actionSafeTop = (actionSafeOverlay.height - actionSafeHeight) / 2;
 
-                // Coordinates of viewfinder (center rectangle)
-                var vfLeft = (diagonalsCanvas.width - viewfinder.width) / 2;
-                var vfTop = (diagonalsCanvas.height - viewfinder.height) / 2;
-                var vfRight = vfLeft + viewfinder.width;
-                var vfBottom = vfTop + viewfinder.height;
-
-                // Draw all diagonal lines in a single path
-                ctx.beginPath();
-                // Top left to viewfinder top left
-                ctx.moveTo(0, 0);
-                ctx.lineTo(vfLeft, vfTop);
-                // Top right to viewfinder top right
-                ctx.moveTo(diagonalsCanvas.width, 0);
-                ctx.lineTo(vfRight, vfTop);
-                // Bottom left to viewfinder bottom left
-                ctx.moveTo(0, diagonalsCanvas.height);
-                ctx.lineTo(vfLeft, vfBottom);
-                // Bottom right to viewfinder bottom right
-                ctx.moveTo(diagonalsCanvas.width, diagonalsCanvas.height);
-                ctx.lineTo(vfRight, vfBottom);
-
-                // Stroke all lines at once
-                ctx.stroke();
-            }
-        }
-    }
+				// Ritaglia l'Action-safe area dal rosso trasparente
+				ctx.clearRect(actionSafeLeft, actionSafeTop, actionSafeWidth, actionSafeHeight);
+			}
+		}
+	
+	}
 
     function play() { qmlAvPlayer.play(); }
     function stop() { qmlAvPlayer.stop(); }
