@@ -73,24 +73,24 @@ FocusScope {
 
             onStatusChanged: {
                 switch (status) {
-                case MediaPlayer.NoMedia:
-                    message.text = qsTr("No media");
-                    break;
-                case MediaPlayer.Loading:
-                    message.text = qsTr("Loading...");
-                    break;
-                case MediaPlayer.Loaded:
-                    message.text = qsTr("Loaded");
-                    break;
-                case MediaPlayer.Stalled:
-                    message.text = qsTr("Stalled");
-                    break;
-                case MediaPlayer.EndOfMedia:
-                    message.text = qsTr("End of media");
-                    break;
-                case MediaPlayer.InvalidMedia:
-                    message.text = qsTr("Error!");
-                    break;
+                    case MediaPlayer.NoMedia:
+                        message.text = qsTr("No media");
+                        break;
+                    case MediaPlayer.Loading:
+                        message.text = qsTr("Loading...");
+                        break;
+                    case MediaPlayer.Loaded:
+                        message.text = qsTr("Loaded");
+                        break;
+                    case MediaPlayer.Stalled:
+                        message.text = qsTr("Stalled");
+                        break;
+                    case MediaPlayer.EndOfMedia:
+                        message.text = qsTr("End of media");
+                        break;
+                    case MediaPlayer.InvalidMedia:
+                        message.text = qsTr("Error!");
+                        break;
                 }
             }
 
@@ -105,112 +105,112 @@ FocusScope {
             width: parent.width * 0.70
             height: parent.height * 0.70
             color: "transparent"
-			border.width: 0
+            border.width: 0
             anchors.centerIn: parent
         }
-		
-	// Centered dotted cross
-	Canvas {
-		id: centralCrossCanvas
-		anchors.fill: parent
 
-		onPaint: {
-		var ctx = centralCrossCanvas.getContext("2d");
-		ctx.clearRect(0, 0, centralCrossCanvas.width, centralCrossCanvas.height);
+        // Centered dotted cross
+        Canvas {
+            id: centralCrossCanvas
+            anchors.fill: parent
 
-		// Set color and type of center cross
-		ctx.strokeStyle = "white";
-		ctx.setLineDash([3, 3])
-		ctx.lineWidth = 1;
+            onPaint: {
+                var ctx = centralCrossCanvas.getContext("2d");
+                ctx.clearRect(0, 0, centralCrossCanvas.width, centralCrossCanvas.height);
 
-		// Center
-		var centerX = centralCrossCanvas.width / 2;
-		var centerY = centralCrossCanvas.height / 2;
+                // Set color and type of center cross
+                ctx.strokeStyle = "white";
+                ctx.setLineDash([3, 3])
+                ctx.lineWidth = 1;
 
-		// Cross arm size
-		var armLength = centralCrossCanvas.height * 0.05;
+                // Center
+                var centerX = centralCrossCanvas.width / 2;
+                var centerY = centralCrossCanvas.height / 2;
 
-		// Draw "+"
-		ctx.beginPath();
+                // Cross arm size
+                var armLength = centralCrossCanvas.height * 0.05;
 
-		// Vertical
-		ctx.moveTo(centerX, centerY - armLength);
-		ctx.lineTo(centerX, centerY + armLength);
+                // Draw "+"
+                ctx.beginPath();
 
-		// Horizontal
-		ctx.moveTo(centerX - armLength, centerY);
-		ctx.lineTo(centerX + armLength, centerY);
+                // Vertical
+                ctx.moveTo(centerX, centerY - armLength);
+                ctx.lineTo(centerX, centerY + armLength);
 
-		// Print
-		ctx.stroke();
-		}
-	}
-     
+                // Horizontal
+                ctx.moveTo(centerX - armLength, centerY);
+                ctx.lineTo(centerX + armLength, centerY);
+
+                // Print
+                ctx.stroke();
+            }
+        }
+
         // Perpendicular guidelines
-	Canvas {
-		id: perpendicularCanvas
-		anchors.fill: parent
-		antialiasing: false
+        Canvas {
+            id: perpendicularCanvas
+            anchors.fill: parent
+            antialiasing: false
 
-		onPaint: {
-			var ctx = perpendicularCanvas.getContext("2d");
-			ctx.clearRect(0, 0, perpendicularCanvas.width, perpendicularCanvas.height);
-			ctx.strokeStyle = "white";
-			ctx.setLineDash([]);
-			ctx.lineWidth = 1;
+            onPaint: {
+                var ctx = perpendicularCanvas.getContext("2d");
+                ctx.clearRect(0, 0, perpendicularCanvas.width, perpendicularCanvas.height);
+                ctx.strokeStyle = "white";
+                ctx.setLineDash([]);
+                ctx.lineWidth = 1;
 
-			//  (center rectangle)
-			var vfLeft = (perpendicularCanvas.width - viewfinder.width) / 2;
-			var vfTop = (perpendicularCanvas.height - viewfinder.height) / 2;
-			var vfRight = vfLeft + viewfinder.width;
-			var vfBottom = vfTop + viewfinder.height;
-			var vfCenterX = vfLeft + viewfinder.width / 2;
-			var vfCenterY = vfTop + viewfinder.height / 2;
+                //  (center rectangle)
+                var vfLeft = (perpendicularCanvas.width - viewfinder.width) / 2;
+                var vfTop = (perpendicularCanvas.height - viewfinder.height) / 2;
+                var vfRight = vfLeft + viewfinder.width;
+                var vfBottom = vfTop + viewfinder.height;
+                var vfCenterX = vfLeft + viewfinder.width / 2;
+                var vfCenterY = vfTop + viewfinder.height / 2;
 
-			// Draw vertical line (centered horizontally)
-			ctx.beginPath();
-			ctx.moveTo(vfCenterX, 0); // From top to above the viewfinder
-			ctx.lineTo(vfCenterX, vfTop);
-			ctx.moveTo(vfCenterX, vfBottom); // From below the viewfinder to bottom
-			ctx.lineTo(vfCenterX, perpendicularCanvas.height);
-			ctx.stroke();
+                // Draw vertical line (centered horizontally)
+                ctx.beginPath();
+                ctx.moveTo(vfCenterX, 0); // From top to above the viewfinder
+                ctx.lineTo(vfCenterX, vfTop);
+                ctx.moveTo(vfCenterX, vfBottom); // From below the viewfinder to bottom
+                ctx.lineTo(vfCenterX, perpendicularCanvas.height);
+                ctx.stroke();
 
-			// Draw horizontal line (centered vertically)
-			ctx.beginPath();
-			ctx.moveTo(0, vfCenterY); // From left to left of the viewfinder
-			ctx.lineTo(vfLeft, vfCenterY);
-			ctx.moveTo(vfRight, vfCenterY); // From right of the viewfinder to right
-			ctx.lineTo(perpendicularCanvas.width, vfCenterY);
-			ctx.stroke();
-		}
-	}
-    
-	// EBU recommended graphic-safe area (95% of the main area, red transparent difference)
-	Canvas {
-		id: actionSafeOverlay
-		anchors.fill: parent
+                // Draw horizontal line (centered vertically)
+                ctx.beginPath();
+                ctx.moveTo(0, vfCenterY); // From left to left of the viewfinder
+                ctx.lineTo(vfLeft, vfCenterY);
+                ctx.moveTo(vfRight, vfCenterY); // From right of the viewfinder to right
+                ctx.lineTo(perpendicularCanvas.width, vfCenterY);
+                ctx.stroke();
+            }
+        }
 
-		onPaint: {
-			var ctx = actionSafeOverlay.getContext("2d");
-			ctx.clearRect(0, 0, actionSafeOverlay.width, actionSafeOverlay.height);
+        // EBU recommended graphic-safe area (95% of the main area, red transparent difference)
+        Canvas {
+            id: actionSafeOverlay
+            anchors.fill: parent
 
-			// Trasparent red
-			ctx.fillStyle = "rgba(255, 0, 0, 0.3)";
-        
-			// Main area
-			ctx.fillRect(0, 0, actionSafeOverlay.width, actionSafeOverlay.height);
+            onPaint: {
+                var ctx = actionSafeOverlay.getContext("2d");
+                ctx.clearRect(0, 0, actionSafeOverlay.width, actionSafeOverlay.height);
 
-			// Graphic-safe area
-			var actionSafeWidth = parent.width * 0.95;
-			var actionSafeHeight = parent.height * 0.95;
-			var actionSafeLeft = (actionSafeOverlay.width - actionSafeWidth) / 2;
-			var actionSafeTop = (actionSafeOverlay.height - actionSafeHeight) / 2;
+                // Trasparent red
+                ctx.fillStyle = "rgba(255, 0, 0, 0.3)";
 
-			// Fills difference
-			ctx.clearRect(actionSafeLeft, actionSafeTop, actionSafeWidth, actionSafeHeight);
-			}
-		}
-	}
+                // Main area
+                ctx.fillRect(0, 0, actionSafeOverlay.width, actionSafeOverlay.height);
+
+                // Graphic-safe area
+                var actionSafeWidth = parent.width * 0.95;
+                var actionSafeHeight = parent.height * 0.95;
+                var actionSafeLeft = (actionSafeOverlay.width - actionSafeWidth) / 2;
+                var actionSafeTop = (actionSafeOverlay.height - actionSafeHeight) / 2;
+
+                // Fills difference
+                ctx.clearRect(actionSafeLeft, actionSafeTop, actionSafeWidth, actionSafeHeight);
+            }
+        }
+    }
 
     function play() { qmlAvPlayer.play(); }
     function stop() { qmlAvPlayer.stop(); }
