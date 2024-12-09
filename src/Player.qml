@@ -109,108 +109,107 @@ FocusScope {
             anchors.centerIn: parent
         }
 		
+	// Centered dotted cross
+	Canvas {
+		id: centralCrossCanvas
+		anchors.fill: parent
+
+		onPaint: {
+		var ctx = centralCrossCanvas.getContext("2d");
+		ctx.clearRect(0, 0, centralCrossCanvas.width, centralCrossCanvas.height);
+
+		// Set color and type of center cross
+		ctx.strokeStyle = "white";
+		ctx.setLineDash([3, 3])
+		ctx.lineWidth = 1;
+
 		// Center
-		Canvas {
-			id: centralCrossCanvas
-			anchors.fill: parent
+		var centerX = centralCrossCanvas.width / 2;
+		var centerY = centralCrossCanvas.height / 2;
 
-			onPaint: {
-			var ctx = centralCrossCanvas.getContext("2d");
-			ctx.clearRect(0, 0, centralCrossCanvas.width, centralCrossCanvas.height);
+		// Cross arm size
+		var armLength = centralCrossCanvas.height * 0.05;
 
-			// Set color and type of center cross
+		// Draw "+"
+		ctx.beginPath();
+
+		// Vertical
+		ctx.moveTo(centerX, centerY - armLength);
+		ctx.lineTo(centerX, centerY + armLength);
+
+		// Horizontal
+		ctx.moveTo(centerX - armLength, centerY);
+		ctx.lineTo(centerX + armLength, centerY);
+
+		// Print
+		ctx.stroke();
+		}
+	}
+     
+        // Perpendicular guidelines
+	Canvas {
+		id: perpendicularCanvas
+		anchors.fill: parent
+		antialiasing: false
+
+		onPaint: {
+			var ctx = perpendicularCanvas.getContext("2d");
+			ctx.clearRect(0, 0, perpendicularCanvas.width, perpendicularCanvas.height);
 			ctx.strokeStyle = "white";
-			ctx.setLineDash([3, 3])
+			ctx.setLineDash([]);
 			ctx.lineWidth = 1;
 
-			// Center
-			var centerX = centralCrossCanvas.width / 2;
-			var centerY = centralCrossCanvas.height / 2;
+			//  (center rectangle)
+			var vfLeft = (perpendicularCanvas.width - viewfinder.width) / 2;
+			var vfTop = (perpendicularCanvas.height - viewfinder.height) / 2;
+			var vfRight = vfLeft + viewfinder.width;
+			var vfBottom = vfTop + viewfinder.height;
+			var vfCenterX = vfLeft + viewfinder.width / 2;
+			var vfCenterY = vfTop + viewfinder.height / 2;
 
-			// Cross arm size
-			var armLength = centralCrossCanvas.height * 0.05;
-
-			// Draw "+"
+			// Draw vertical line (centered horizontally)
 			ctx.beginPath();
-
-			// Vertical
-			ctx.moveTo(centerX, centerY - armLength);
-			ctx.lineTo(centerX, centerY + armLength);
-
-			// Horizontal
-			ctx.moveTo(centerX - armLength, centerY);
-			ctx.lineTo(centerX + armLength, centerY);
-
-			// Print
+			ctx.moveTo(vfCenterX, 0); // From top to above the viewfinder
+			ctx.lineTo(vfCenterX, vfTop);
+			ctx.moveTo(vfCenterX, vfBottom); // From below the viewfinder to bottom
+			ctx.lineTo(vfCenterX, perpendicularCanvas.height);
 			ctx.stroke();
-			}
+
+			// Draw horizontal line (centered vertically)
+			ctx.beginPath();
+			ctx.moveTo(0, vfCenterY); // From left to left of the viewfinder
+			ctx.lineTo(vfLeft, vfCenterY);
+			ctx.moveTo(vfRight, vfCenterY); // From right of the viewfinder to right
+			ctx.lineTo(perpendicularCanvas.width, vfCenterY);
+			ctx.stroke();
 		}
-     
-        // Perpendicular lines
-		Canvas {
-			id: perpendicularCanvas
-			anchors.fill: parent
-			antialiasing: true
-
-			onPaint: {
-				var ctx = perpendicularCanvas.getContext("2d");
-				ctx.clearRect(0, 0, perpendicularCanvas.width, perpendicularCanvas.height);
-				ctx.strokeStyle = "white";
-				ctx.setLineDash([]);
-				ctx.lineWidth = 1;
-
-				// Coordinates of viewfinder (center rectangle)
-				var vfLeft = (perpendicularCanvas.width - viewfinder.width) / 2;
-				var vfTop = (perpendicularCanvas.height - viewfinder.height) / 2;
-				var vfRight = vfLeft + viewfinder.width;
-				var vfBottom = vfTop + viewfinder.height;
-				var vfCenterX = vfLeft + viewfinder.width / 2;
-				var vfCenterY = vfTop + viewfinder.height / 2;
-
-				// Draw vertical line (centered horizontally)
-				ctx.beginPath();
-				ctx.moveTo(vfCenterX, 0); // From top to above the viewfinder
-				ctx.lineTo(vfCenterX, vfTop);
-				ctx.moveTo(vfCenterX, vfBottom); // From below the viewfinder to bottom
-				ctx.lineTo(vfCenterX, perpendicularCanvas.height);
-				ctx.stroke();
-
-				// Draw horizontal line (centered vertically)
-				ctx.beginPath();
-				ctx.moveTo(0, vfCenterY); // From left to left of the viewfinder
-				ctx.lineTo(vfLeft, vfCenterY);
-				ctx.moveTo(vfRight, vfCenterY); // From right of the viewfinder to right
-				ctx.lineTo(perpendicularCanvas.width, vfCenterY);
-				ctx.stroke();
-			}
-		}
+	}
     
-		// EBU recommended Action-safe area (96.5% of the main area, red transparent)
-		Canvas {
-			id: actionSafeOverlay
-			anchors.fill: parent
+	// EBU recommended graphic-safe area (95% of the main area, red transparent difference)
+	Canvas {
+		id: actionSafeOverlay
+		anchors.fill: parent
 
-			onPaint: {
-				var ctx = actionSafeOverlay.getContext("2d");
-				ctx.clearRect(0, 0, actionSafeOverlay.width, actionSafeOverlay.height);
+		onPaint: {
+			var ctx = actionSafeOverlay.getContext("2d");
+			ctx.clearRect(0, 0, actionSafeOverlay.width, actionSafeOverlay.height);
 
-				// Colore rosso trasparente
-				ctx.fillStyle = "rgba(255, 0, 0, 0.3)";
+			// Trasparent red
+			ctx.fillStyle = "rgba(255, 0, 0, 0.3)";
         
-				// Disegna l'area principale
-				ctx.fillRect(0, 0, actionSafeOverlay.width, actionSafeOverlay.height);
+			// Main area
+			ctx.fillRect(0, 0, actionSafeOverlay.width, actionSafeOverlay.height);
 
-				// Calcola il rettangolo centrale per l'Action-safe area
-				var actionSafeWidth = parent.width * 0.95;
-				var actionSafeHeight = parent.height * 0.95;
-				var actionSafeLeft = (actionSafeOverlay.width - actionSafeWidth) / 2;
-				var actionSafeTop = (actionSafeOverlay.height - actionSafeHeight) / 2;
+			// Graphic-safe area
+			var actionSafeWidth = parent.width * 0.95;
+			var actionSafeHeight = parent.height * 0.95;
+			var actionSafeLeft = (actionSafeOverlay.width - actionSafeWidth) / 2;
+			var actionSafeTop = (actionSafeOverlay.height - actionSafeHeight) / 2;
 
-				// Ritaglia l'Action-safe area dal rosso trasparente
-				ctx.clearRect(actionSafeLeft, actionSafeTop, actionSafeWidth, actionSafeHeight);
+			// Fills difference
+			ctx.clearRect(actionSafeLeft, actionSafeTop, actionSafeWidth, actionSafeHeight);
 			}
 		}
-	
 	}
 
     function play() { qmlAvPlayer.play(); }
