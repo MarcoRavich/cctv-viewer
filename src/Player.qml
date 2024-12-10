@@ -108,43 +108,45 @@ FocusScope {
             border.width: 0
             anchors.centerIn: parent
         }
+		
+		Canvas {
+			id: centralCrossCanvas
+			anchors.fill: parent
 
-        // Centered dotted cross
-        Canvas {
-            id: centralCrossCanvas
-            anchors.fill: parent
+			onPaint: {
+			var ctx = centralCrossCanvas.getContext("2d");
+			ctx.clearRect(0, 0, centralCrossCanvas.width, centralCrossCanvas.height);
+		
+			// Set color and type of center cross
+			ctx.strokeStyle = "#00ffff";
+			ctx.lineWidth = 1;	
 
-            onPaint: {
-                var ctx = centralCrossCanvas.getContext("2d");
-                ctx.clearRect(0, 0, centralCrossCanvas.width, centralCrossCanvas.height);
+			// Coordinate del centro del rettangolo principale
+			var centerX = centralCrossCanvas.width / 2;
+			var centerY = centralCrossCanvas.height / 2;
 
-                // Set color and type of center cross
-                ctx.strokeStyle = "white";
-                ctx.setLineDash([3, 3])
-                ctx.lineWidth = 1;
+			// Calcola le coordinate dei punti estremi della croce ruotata
+			var angle = Math.PI / 4; // 45 degrees in radians
+			var armLength = centralCrossCanvas.height * 0.05;
 
-                // Center
-                var centerX = centralCrossCanvas.width / 2;
-                var centerY = centralCrossCanvas.height / 2;
+			var x1 = centerX + armLength * Math.cos(angle);
+			var y1 = centerY + armLength * Math.sin(angle);
+			var x2 = centerX - armLength * Math.cos(angle);
+			var y2 = centerY - armLength * Math.sin(angle);
+			var x3 = centerX + armLength * Math.sin(angle);
+			var y3 = centerY - armLength * Math.cos(angle);
+			var x4 = centerX - armLength * Math.sin(angle);
+			var y4 = centerY + armLength * Math.cos(angle);
 
-                // Cross arm size
-                var armLength = centralCrossCanvas.height * 0.05;
-
-                // Draw "+"
-                ctx.beginPath();
-
-                // Vertical
-                ctx.moveTo(centerX, centerY - armLength);
-                ctx.lineTo(centerX, centerY + armLength);
-
-                // Horizontal
-                ctx.moveTo(centerX - armLength, centerY);
-                ctx.lineTo(centerX + armLength, centerY);
-
-                // Print
-                ctx.stroke();
-            }
-        }
+			// Disegna il simbolo "+"
+			ctx.beginPath();
+			ctx.moveTo(x1, y1);
+			ctx.lineTo(x2, y2);
+			ctx.moveTo(x3, y3);
+			ctx.lineTo(x4, y4);
+			ctx.stroke();
+			}
+		}
 
         // Perpendicular guidelines
         Canvas {
@@ -155,9 +157,8 @@ FocusScope {
             onPaint: {
                 var ctx = perpendicularCanvas.getContext("2d");
                 ctx.clearRect(0, 0, perpendicularCanvas.width, perpendicularCanvas.height);
-                ctx.strokeStyle = "white";
-                ctx.setLineDash([]);
-                ctx.lineWidth = 1;
+				ctx.strokeStyle = "#00ffff";
+				
 
                 //  (center rectangle)
                 var vfLeft = (perpendicularCanvas.width - viewfinder.width) / 2;
@@ -195,7 +196,7 @@ FocusScope {
                 ctx.clearRect(0, 0, actionSafeOverlay.width, actionSafeOverlay.height);
 
                 // Trasparent red
-                ctx.fillStyle = "rgba(255, 0, 0, 0.3)";
+                ctx.fillStyle = "rgba(255, 0, 0, 0.2)";
 
                 // Main area
                 ctx.fillRect(0, 0, actionSafeOverlay.width, actionSafeOverlay.height);
